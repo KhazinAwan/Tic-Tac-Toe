@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,85 @@
     <script src="script.js" defer></script>
     <title>Document</title>
 </head>
+
 <body>
-    
+
+    <header>
+        <h1>Tic Tac Toe</h1>
+    </header>
+
+    <main>
+
+        <section id="playerOne" class="playerCard">
+
+            <h2>Player 1</h2>
+
+            <div>
+                <p class="label">Name</p>
+                <p id="playerOneName">-</p>
+            </div>
+
+            <div>
+                <p class="label">Marker</p>
+                <p id="playerOneMarker">-</p>
+            </div>
+
+            <div>
+                <p class="label">Score</p>
+                <p id="playerOneScore">0</p>
+            </div>
+
+        </section>
+
+        <section id="gameArea">
+
+            <h2 id="gameStatus">Press Start to Begin</h2>
+
+            <div id="board">
+
+                <button class="cell" data-row="0" data-col="0"></button>
+                <button class="cell" data-row="0" data-col="1"></button>
+                <button class="cell" data-row="0" data-col="2"></button>
+
+                <button class="cell" data-row="1" data-col="0"></button>
+                <button class="cell" data-row="1" data-col="1"></button>
+                <button class="cell" data-row="1" data-col="2"></button>
+
+                <button class="cell" data-row="2" data-col="0"></button>
+                <button class="cell" data-row="2" data-col="1"></button>
+                <button class="cell" data-row="2" data-col="2"></button>
+                
+            </div>
+
+            <button id="startBtn">Start Game</button>
+
+            <button id="restartBtn" hidden>Restart Game</button>
+
+        </section>
+
+        <section id="playerTwo" class="playerCard">
+
+            <h2>Player 2</h2>
+
+            <div>
+                <p class="label">Name</p>
+                <p id="playerTwoName">-</p>
+            </div>
+
+            <div>
+                <p class="label">Marker</p>
+                <p id="playerTwoMarker">-</p>
+            </div>
+
+            <div>
+                <p class="label">Score</p>
+                <p id="playerTwoScore">0</p>
+            </div>
+
+        </section>
+
+    </main>
+
 </body>
+
 </html>
