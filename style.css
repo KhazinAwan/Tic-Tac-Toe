@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+
+    --background-color: #181818;
+    --surface-color: #242424;
+    --primary-color: #c1121f;
+    --text-color: #ffffff;
+    --border-color: #ffffff;
+
+}
+
+body {
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+header {
+
+    padding: 1.5rem;
+
+    text-align: center;
+
+    background-color: black;
+
+    border-bottom: 3px solid var(--primary-color);
+
+}
+
+header h1 {
+
+    font-size: 2.5rem;
+
+}
+
+main {
+
+    flex: 1;
+
+    display: grid;
+
+    grid-template-columns: 1fr 2fr 1fr;
+
+    gap: 2rem;
+
+    padding: 2rem;
+
+}
+
+.playerCard {
+
+    background-color: var(--surface-color);
+
+    border: 2px solid var(--border-color);
+
+    border-radius: 10px;
+
+    padding: 1.5rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 1.5rem;
+
+}
+
+.playerCard h2 {
+
+    text-align: center;
+
+    color: var(--primary-color);
+
+}
+
+.playerCard div {
+
+    display: flex;
+
+    justify-content: space-between;
+
+}
+
+.label {
+
+    font-weight: bold;
+
+}
+
+#gameArea {
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 2rem;
+
+}
+
+#gameStatus {
+
+    text-align: center;
+
+}
+
+#board {
+
+    width: 420px;
+    height: 420px;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+}
+
+.cell {
+
+    background-color: transparent;
+
+    border: none;
+
+    color: var(--text-color);
+
+    font-size: 4rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.cell:hover,
+.cell:focus {
+
+    background-color: rgba(193, 18, 31, 0.15);
+
+    outline: none;
+
+}
+
+.cell:nth-child(1),
+.cell:nth-child(2),
+.cell:nth-child(4),
+.cell:nth-child(5),
+.cell:nth-child(7),
+.cell:nth-child(8) {
+
+    border-right: 4px solid var(--border-color);
+
+}
+
+.cell:nth-child(-n+6) {
+
+    border-bottom: 4px solid var(--border-color);
+
+}
+
+#startBtn,
+#restartBtn {
+
+    padding: 0.8rem 2rem;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: var(--primary-color);
+
+    color: var(--text-color);
+
+    font-size: 1rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+#startBtn:hover,
+#restartBtn:hover,
+#startBtn:focus,
+#restartBtn:focus {
+
+    background-color: #9b0d18;
+
+    outline: none;
+
+}

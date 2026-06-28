@@ -350,4 +350,4 @@ function createPlayer(name, marker, number) {
 }
 
 
-gameController.ticTacToe();
+// gameController.ticTacToe();
