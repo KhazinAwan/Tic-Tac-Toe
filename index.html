@@ -15,6 +15,29 @@
         <h1>Tic Tac Toe</h1>
     </header>
 
+    <dialog id="playerDialog">
+
+        <h2>Player Setup</h2>
+
+        <label for="playerNameInput">Name</label>
+        <input id="playerNameInput" type="text" maxlength="15">
+
+        <p>Choose your marker</p>
+
+        <div id="markerContainer">
+
+            <button class="markerBtn" data-marker="X">X</button>
+
+            <button class="markerBtn" data-marker="O">O</button>
+
+            <button class="markerBtn" data-marker="V">V</button>
+
+        </div>
+
+        <button id="continueBtn">Continue</button>
+
+    </dialog>
+
     <main>
 
         <section id="playerOne" class="playerCard">

@@ -243,33 +243,37 @@ const gameController = (() => {
 
             if(gameEnd) {
 
-                const input = prompt("Would you like to restart?(y/n)").toLowerCase();
-
-                if(input === 'y') {
-
-                    markers.length = 0;
-
-                    markers.push("X", "O", "V");
-
-                    players.length = 0;
-
-                    board.resetBoard();
-
-                    gameEnd = false;
-
-                    return true;
+                startBtn.hidden = false;
+                restartBtn.hidden = true;
 
                 }
 
                 else {
 
-                    console.log("BYE BYE!");
                     return false;
                 }
 
             }
 
-        }
+    }
+
+
+    function restartGame() {
+
+        markers.length = 0;
+
+        markers.push("X", "O", "V");
+
+        players.length = 0;
+
+        board.resetBoard();
+
+        gameEnd = false;
+
+        startBtn.hidden = false;
+        restartBtn.hidden = true;
+
+        ticTacToe();
 
     }
 
@@ -321,7 +325,11 @@ const gameController = (() => {
 
     }
 
-    return {ticTacToe, players};
+    function startGame() {
+        ticTacToe();
+    }
+
+    return {startGame, restartGame, players};
     
 })()
 
@@ -341,13 +349,17 @@ function createPlayer(name, marker, number) {
         return chosenMarker;
     }
 
-    function getPlayerDetails() {
-
-        console.log(`${playerName} with marker ${chosenMarker}`);
-    }
-
-    return {getName, getMarker, getPlayerDetails};
+    return {getName, getMarker};
 }
 
 
-// gameController.ticTacToe();
+const startBtn = document.querySelector("#startBtn");
+const restartBtn = document.querySelector("#restartBtn");
+
+startBtn.addEventListener("click", gameController.startGame);
+
+restartBtn.addEventListener("click", gameController.restartGame);
+
+const playerDialog = document.querySelector("#playerDialog");
+
+playerDialog.showModal();
