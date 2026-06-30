@@ -308,7 +308,8 @@ dialog label {
 
 .markerBtn:hover,
 .markerBtnSelected,
-#continueBtn:hover
+#continueBtn:hover,
+#continueBtn:focus
 
  {
 

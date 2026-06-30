@@ -296,10 +296,14 @@ const gameController = (() => {
             btn.textContent = marker;
             board.putMarker(btn.dataset.row, btn.dataset.col, marker);
 
-            checkWin(marker);
-            checkTie();
+            let won = checkWin(marker);
 
+            if(!won) {
+
+            checkTie();
             currPlayerIndex = (currPlayerIndex + 1) % 2;
+
+            }
 
             if (currPlayerIndex === 0) {
 
@@ -373,6 +377,8 @@ const gameController = (() => {
 
             status.textContent = `Player: ${players[currPlayerIndex].getName()} wins!`
             status.style.visibility = "visible";
+
+            return true;
         }
 
         return false;
@@ -426,6 +432,7 @@ const gameController = (() => {
         clearDialog();
 
         players.length = 0;
+        currPlayerIndex = 0;
 
         board.resetBoard();
         clearMarkersFromBoard();
@@ -441,6 +448,14 @@ const gameController = (() => {
         btns.forEach(btn => {
 
             btn.classList.remove("markerBtnSelected");
+
+        })
+
+        const playerCards = document.querySelectorAll(".playerCard");
+
+        playerCards.forEach(card => {
+
+            card.classList.remove("redBorder");
 
         })
 
