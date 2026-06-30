@@ -203,6 +203,8 @@ const gameController = (() => {
 
             else {
 
+            updatePlayerCards();
+
             dialog.close();
 
             }
@@ -216,6 +218,21 @@ const gameController = (() => {
             
         players.push(createPlayer(name, chosenMarker));
        
+    }
+
+    function updatePlayerCards() {
+
+        const playerOneName = document.getElementById("playerOneName");
+        const playerOneMarker = document.getElementById("playerOneMarker");
+
+        const playerTwoName = document.getElementById("playerTwoName");
+        const playerTwoMarker = document.getElementById("playerTwoMarker");
+
+        playerOneName.textContent = players[0].getName();
+        playerOneMarker.textContent = players[0].getMarker();
+
+        playerTwoName.textContent = players[1].getName();
+        playerTwoMarker.textContent = players[1].getMarker();
     }
 
     function createPlayers() {
