@@ -374,7 +374,15 @@ const gameController = (() => {
 
     function checkTie() {
 
-        return (board.getBlocksFilled() === 9);
+        if (board.getBlocksFilled() === 9) {
+
+            const status = document.getElementById("gameStatus");
+
+            status.textContent = "It's a tie!";
+
+            status.style.visibility = "visible";
+
+        }
 
     }
 
