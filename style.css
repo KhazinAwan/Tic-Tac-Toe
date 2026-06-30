@@ -122,6 +122,8 @@ dialog h2 {
 
     text-align: center;
 
+    visibility: hidden;
+
 }
 
 #board {
@@ -344,4 +346,9 @@ dialog input,
 
 .redBorder {
     border: 4px solid var(--primary-color);
+}
+
+.cell.redBg {
+
+    background-color: var(--primary-color);
 }

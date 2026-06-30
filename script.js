@@ -313,11 +313,17 @@ const gameController = (() => {
 
         const grid = board.getBoard();
 
+        const status = document.getElementById("gameStatus");
+
+        let won;
+
         for (let row = 0; row < 3; row++) {
 
             if (grid[row][0] === marker && grid[row][1] === marker && grid[row][2] === marker) {
 
-                return true;
+                highlightCells([row, 0], [row, 1], [row, 2]);
+
+                won = true;
             }
         }
 
@@ -325,16 +331,45 @@ const gameController = (() => {
 
             if (grid[0][col] === marker && grid[1][col] === marker && grid[2][col] === marker) {
 
-                return true;
+                highlightCells([0, col], [1, col], [2, col]);
+
+                won =  true;
             }
         }
 
-        if ((grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) || (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker)) {
+        if (grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) {
 
-            return true;
+            highlightCells([0, 0], [1, 1], [2, 2]);
+
+            won = true;
+        }
+
+        if (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker) {
+
+            highlightCells([0, 2], [1, 1], [2, 0]);
+
+            won = true;
+        }
+
+        if(won) {
+
+            status.textContent = `Player: ${players[currPlayerIndex].getName()} wins!`
+            status.style.visibility = "visible";
         }
 
         return false;
+    }
+
+    function highlightCells(cellOne, cellTwo, cellThree) {
+
+        const cell1 = document.querySelector(`[data-row="${cellOne[0]}"][data-col="${cellOne[1]}"]`);
+        const cell2 = document.querySelector(`[data-row="${cellTwo[0]}"][data-col="${cellTwo[1]}"]`);
+        const cell3 = document.querySelector(`[data-row="${cellThree[0]}"][data-col="${cellThree[1]}"]`);
+
+        cell1.classList.add("redBg");
+        cell2.classList.add("redBg");
+        cell3.classList.add("redBg");
+
     }
 
     function checkTie() {
