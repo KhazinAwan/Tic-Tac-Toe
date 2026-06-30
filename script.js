@@ -13,11 +13,11 @@ const gameBoard = (() => {
 
         let count = 0;
 
-        for(let i = 0; i < rows; i++) {
+        for (let i = 0; i < rows; i++) {
 
-            for(let j = 0; j < cols; j++) {
+            for (let j = 0; j < cols; j++) {
 
-                if(board[i][j] != " ") {
+                if (board[i][j] != " ") {
 
                     count++;
                 }
@@ -27,9 +27,9 @@ const gameBoard = (() => {
         return count;
     }
 
-    function placeMarker(rowIndex, colIndex, marker) {
+    function putMarker(rowIndex, colIndex, marker) {
 
-        if(board[rowIndex][colIndex] === " ") {
+        if (board[rowIndex][colIndex] === " ") {
 
             board[rowIndex][colIndex] = marker;
 
@@ -49,9 +49,9 @@ const gameBoard = (() => {
 
     function resetBoard() {
 
-        for(let row = 0; row < rows; row++ ) {
+        for (let row = 0; row < rows; row++) {
 
-            for(let col = 0; col < cols; col++) {
+            for (let col = 0; col < cols; col++) {
 
                 board[row][col] = " ";
             }
@@ -59,7 +59,7 @@ const gameBoard = (() => {
 
     }
 
-    return { getBoard, placeMarker, resetBoard, getBlocksFilled};
+    return { getBoard, putMarker, resetBoard, getBlocksFilled };
 
 })();
 
@@ -69,8 +69,8 @@ const gameController = (() => {
     const MAX_PLAYERS = 2;
     const players = [];
     const board = gameBoard;
-    const MAX_ROUNDS = 5;
-    let gameEnd = false;
+
+    let currPlayerIndex = 0;
 
     function updateMarkers() {
 
@@ -80,7 +80,7 @@ const gameController = (() => {
 
             const marker = btn.dataset.marker;
 
-            if(!markers.includes(marker)) {
+            if (!markers.includes(marker)) {
 
                 btn.style.display = "none";
             }
@@ -101,7 +101,7 @@ const gameController = (() => {
 
         const name = nameInput.value.trim();
 
-        if(name === "") {
+        if (name === "") {
 
             errorOnInput.style.display = "block";
 
@@ -116,35 +116,35 @@ const gameController = (() => {
 
     }
 
-    const markerBtn = (()=> {
+    const markerBtn = (() => {
 
-       const btns = document.querySelectorAll(".markerBtn");
+        const btns = document.querySelectorAll(".markerBtn");
 
-       let chosenMarker;
+        let chosenMarker;
 
-       btns.forEach(btn => {
+        btns.forEach(btn => {
 
-        btn.addEventListener("click" , (event)=> {
+            btn.addEventListener("click", (event) => {
 
-            btns.forEach(btn => {
+                btns.forEach(btn => {
 
-                btn.classList.remove("markerBtnSelected");
+                    btn.classList.remove("markerBtnSelected");
+
+                })
+
+                chosenMarker = event.target.textContent;
+                btn.classList.add("markerBtnSelected");
 
             })
-
-            chosenMarker = event.target.textContent;
-            btn.classList.add("markerBtnSelected");
-
         })
-       })
 
-       function getChosenMarker() {
+        function getChosenMarker() {
 
-        return chosenMarker;
+            return chosenMarker;
 
-       }
+        }
 
-       return {getChosenMarker};
+        return { getChosenMarker };
 
     })();
 
@@ -162,18 +162,18 @@ const gameController = (() => {
 
     }
 
-    (function addingEventListeners() { 
-        
+    (function addingPlayerFormEventListener() {
+
         const playerForm = document.getElementById("playerForm");
 
-        playerForm.addEventListener("submit" , (event) => {
-            
+        playerForm.addEventListener("submit", (event) => {
+
             event.preventDefault();
 
             const name = NameValidator();
             const chosenMarker = markerBtn.getChosenMarker();
 
-            if(!chosenMarker) {
+            if (!chosenMarker) {
 
                 const markerError = document.getElementById("markerError");
 
@@ -181,7 +181,7 @@ const gameController = (() => {
 
             }
 
-            if(!name || !chosenMarker){
+            if (!name || !chosenMarker) {
 
                 return;
             }
@@ -193,7 +193,7 @@ const gameController = (() => {
 
             Player(name, chosenMarker);
 
-            if(players.length < MAX_PLAYERS) {
+            if (players.length < MAX_PLAYERS) {
 
                 updateDialog();
 
@@ -203,9 +203,9 @@ const gameController = (() => {
 
             else {
 
-            updatePlayerCards();
+                updatePlayerCards();
 
-            dialog.close();
+                dialog.close();
 
             }
 
@@ -215,9 +215,9 @@ const gameController = (() => {
 
 
     function Player(name, chosenMarker) {
-            
+
         players.push(createPlayer(name, chosenMarker));
-       
+
     }
 
     function updatePlayerCards() {
@@ -228,11 +228,15 @@ const gameController = (() => {
         const playerTwoName = document.getElementById("playerTwoName");
         const playerTwoMarker = document.getElementById("playerTwoMarker");
 
+        const playerOneCard = document.getElementById("playerOne");
+
         playerOneName.textContent = players[0].getName();
         playerOneMarker.textContent = players[0].getMarker();
 
         playerTwoName.textContent = players[1].getName();
         playerTwoMarker.textContent = players[1].getMarker();
+
+        playerOneCard.classList.add("redBorder");
     }
 
     function createPlayers() {
@@ -246,162 +250,62 @@ const gameController = (() => {
 
     }
 
-    function chooseBlock() {
+    (function addingGridCellsEventListeners() {
 
-        let invalidRow = false;
-        let invalidCol = false;
-        let row;
-        let col;
+        const cells = document.querySelectorAll("#board .cell");
 
-        do {
+        cells.forEach(cell => {
 
-            row = Number(prompt("Enter row number(1-3)"));
+            cell.addEventListener("click", (event) => {
 
-            if((row < 1 || row > 3) || !Number.isInteger(row)) {
+                placeMarker(event.target);
+            });
+        })
 
-                invalidRow = true;
-                console.log("Invalid row input. Enter again.")
+    })();
+
+    function placeMarker(btn) {
+
+        let currPlayer = players[currPlayerIndex];
+
+        const marker = currPlayer.getMarker();
+
+        const playerOneCard = document.getElementById("playerOne");
+        const playerTwoCard = document.getElementById("playerTwo");
+
+        if (btn.textContent === "") {
+
+            btn.textContent = marker;
+            board.putMarker(btn.dataset.row, btn.dataset.col, marker);
+
+            checkWin(marker);
+            checkTie();
+
+            currPlayerIndex = (currPlayerIndex + 1) % 2;
+
+            if (currPlayerIndex === 0) {
+
+                playerOneCard.classList.add("redBorder");
+                playerTwoCard.classList.remove("redBorder");
             }
 
             else {
 
-                invalidRow = false;
+                playerTwoCard.classList.add("redBorder");
+                playerOneCard.classList.remove("redBorder");
             }
-
-        } while(invalidRow);
-
-        do {
-
-            col = Number(prompt("Enter column number(1-3)"));
-
-            if((col < 1 || col > 3) || !Number.isInteger(col)) {
-
-                invalidCol = true;
-                console.log("Invalid col input. Enter again.")
-            }
-
-            else {
-
-                invalidCol = false;
-            }
-
-        } while(invalidCol);
-
-
-        return {row, col};
-    }
-
-    function checkBlock(row, col) {
-
-        return (board.getBoard()[row][col] === " ");
-
-    }
-
-    function playerTurn(marker) {
-
-        const {row, col} = chooseBlock();
-
-        const valid = checkBlock(row-1, col-1);
-
-        if(valid) {
-            board.placeMarker(row-1, col-1, marker);
-            return false;
         }
 
         else {
 
-            console.log("Block already occupied, try another one");
-            return true;
+            return;
         }
-    }
-
-    function round() {
-    
-        for(let i = 0; i < MAX_PLAYERS; i++) {
-
-            let currMarker = players[i].getMarker();
-
-            console.log(`${players[i].getName()}'s turn`);
-
-            let repeatTurn = false;
-
-            do {
-
-                repeatTurn = playerTurn(currMarker);
-
-            } while(repeatTurn);
-
-            if(checkWin(currMarker)) {
-
-                console.log(`HOORAY! ${players[i].getName()} WON`);
-                gameEnd = true;
-                break;
-            }
-
-            if(checkTie()) {
-
-                console.log("ITS A TIE!");
-                gameEnd = true;
-                break;
-            }
-
-        }
-    }
-
-    function playOneGame() {
-
-        createPlayers();
-
-        for(let i = 0; i < MAX_ROUNDS; i++) {
-
-            round();
-
-            if(gameEnd) {
-
-                startBtn.hidden = false;
-                restartBtn.hidden = true;
-
-                }
-
-                else {
-
-                    return false;
-                }
-
-            }
-
-    }
-
-
-    function restartGame() {
-
-        markers.length = 0;
-
-        markers.push("X", "O", "V");
-
-        players.length = 0;
-
-        board.resetBoard();
-
-        gameEnd = false;
-
-        startBtn.hidden = false;
-        restartBtn.hidden = true;
-
-        ticTacToe();
 
     }
 
     function ticTacToe() {
 
-        let play;
-
-        do {
-
-            play = playOneGame();
-
-
-        } while(play);
+        createPlayers();
 
     }
 
@@ -409,25 +313,25 @@ const gameController = (() => {
 
         const grid = board.getBoard();
 
-        for( let row = 0; row < 3; row++) {
+        for (let row = 0; row < 3; row++) {
 
-            if( grid[row][0] === marker && grid[row][1] === marker && grid[row][2] === marker) {
-
-                return true;
-            }
-        }
-
-        for( let col = 0; col < 3; col++) {
-
-            if( grid[0][col] === marker && grid[1][col] === marker && grid[2][col] === marker) {
+            if (grid[row][0] === marker && grid[row][1] === marker && grid[row][2] === marker) {
 
                 return true;
             }
         }
 
-        if((grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) || (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker)) {
+        for (let col = 0; col < 3; col++) {
+
+            if (grid[0][col] === marker && grid[1][col] === marker && grid[2][col] === marker) {
 
                 return true;
+            }
+        }
+
+        if ((grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) || (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker)) {
+
+            return true;
         }
 
         return false;
@@ -439,12 +343,30 @@ const gameController = (() => {
 
     }
 
+    function restartGame() {
+
+        markers.length = 0;
+
+        markers.push("X", "O", "V");
+
+        players.length = 0;
+
+        board.resetBoard();
+
+        startBtn.hidden = false;
+        restartBtn.hidden = true;
+
+        ticTacToe();
+
+    }
+
     function startGame() {
+
         ticTacToe();
     }
 
-    return {startGame, restartGame, players};
-    
+    return { startGame, restartGame, players };
+
 })()
 
 
@@ -463,7 +385,7 @@ function createPlayer(name, marker) {
         return chosenMarker;
     }
 
-    return {getName, getMarker};
+    return { getName, getMarker };
 }
 
 
