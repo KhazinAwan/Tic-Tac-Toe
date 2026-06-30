@@ -247,19 +247,25 @@ dialog label {
 
 }
 
-dialog input {
 
-    margin-bottom: 2rem;
+#playerForm #nameError,
+#playerForm #markerError {
 
-    outline: none;
+    color: var(--primary-color);
 
+    font-size: 0.8rem;
+
+    margin-top: 0.4rem;
+
+    display: none;
 }
 
-dialog p {
+
+#playerForm p:nth-of-type(2) {
 
     text-align: center;
 
-    margin-top: 1rem;
+    margin-top: 2rem;
     margin-bottom: 2rem;
 
     font-weight: bold;
@@ -299,18 +305,12 @@ dialog p {
 }
 
 .markerBtn:hover,
-#continueBtn:hover {
+#continueBtn:hover,
+.markerBtnSelected {
 
     background-color: var(--primary-color);
 }
 
-.markerBtn:disabled {
-
-    opacity: 0.4;
-
-    cursor: default;
-
-}
 
 #continueBtn {
 
@@ -327,7 +327,7 @@ dialog input,
 
     width: 100%;
 
-    padding: 1rem;
+    padding: 0.8rem;
 
     background-color: transparent;
 
@@ -337,8 +337,7 @@ dialog input,
 
     border-radius: 8px;
 
-    outline: none;
-
     font-size: 1rem;
+
 
 }

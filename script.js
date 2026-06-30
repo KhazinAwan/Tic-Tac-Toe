@@ -72,63 +72,161 @@ const gameController = (() => {
     const MAX_ROUNDS = 5;
     let gameEnd = false;
 
-    function showMarkers() {
-        console.log("Available markers: ", markers);
+    function updateMarkers() {
+
+        const markerBtns = document.querySelectorAll(".markerBtn");
+
+        markerBtns.forEach(btn => {
+
+            const marker = btn.dataset.marker;
+
+            if(!markers.includes(marker)) {
+
+                btn.style.display = "none";
+            }
+
+            else {
+
+                btn.style.display = "inline-block";
+            }
+
+        })
+
     }
 
-    function enterName() {
+    function NameValidator() {
 
-        const name = prompt("Enter your name:");
+        const nameInput = document.getElementById("playerNameInput");
+        const errorOnInput = document.getElementById("nameError");
+
+        const name = nameInput.value.trim();
+
+        if(name === "") {
+
+            errorOnInput.style.display = "block";
+
+        }
+
+        else {
+
+            errorOnInput.style.display = "none";
+        }
 
         return name;
 
     }
 
-    function chooseMarker(name) {
+    const markerBtn = (()=> {
 
-        showMarkers();
+       const btns = document.querySelectorAll(".markerBtn");
 
-        let index = 0;
-        let chosenMarker;
+       let chosenMarker;
 
-        do {
+       btns.forEach(btn => {
 
-            const input = prompt(`Player ${name}, Enter the marker of your choice:`);
+        btn.addEventListener("click" , (event)=> {
 
-            index = markers.indexOf(input);
+            btns.forEach(btn => {
 
-            if (index > -1) {
+                btn.classList.remove("markerBtnSelected");
 
-                chosenMarker = markers[index];
-                markers.splice(index, 1);  
+            })
+
+            chosenMarker = event.target.textContent;
+            btn.classList.add("markerBtnSelected");
+
+        })
+       })
+
+       function getChosenMarker() {
+
+        return chosenMarker;
+
+       }
+
+       return {getChosenMarker};
+
+    })();
+
+    function updateDialog() {
+
+        const nameInput = document.getElementById("playerNameInput");
+        const errorOnInput = document.getElementById("nameError");
+        const markerError = document.getElementById("markerError");
+
+        nameInput.value = "";
+        errorOnInput.style.display = "none";
+        markerError.style.display = "none";
+
+        updateMarkers();
+
+    }
+
+    (function addingEventListeners() { 
+        
+        const playerForm = document.getElementById("playerForm");
+
+        playerForm.addEventListener("submit" , (event) => {
+            
+            event.preventDefault();
+
+            const name = NameValidator();
+            const chosenMarker = markerBtn.getChosenMarker();
+
+            if(!chosenMarker) {
+
+                const markerError = document.getElementById("markerError");
+
+                markerError.style.display = "block";
+
+            }
+
+            if(!name || !chosenMarker){
+
+                return;
+            }
+
+            const dialog = document.getElementById("playerDialog");
+            const playerSetUpMsg = dialog.querySelector("h2");
+
+            markers.splice(markers.indexOf(chosenMarker), 1);
+
+            Player(name, chosenMarker);
+
+            if(players.length < MAX_PLAYERS) {
+
+                updateDialog();
+
+                playerSetUpMsg.textContent = `Player ${players.length + 1} Set Up`;
+
             }
 
             else {
 
-                console.log("Wrong input, Please try again");
+            dialog.close();
+
             }
 
-        } while (index === -1);
+        })
 
-        return chosenMarker;
+    })();
+
+
+    function Player(name, chosenMarker) {
+            
+        players.push(createPlayer(name, chosenMarker));
+       
     }
 
     function createPlayers() {
 
-        players.length = 0;
+        const dialog = document.getElementById("playerDialog");
+        const playerSetUpMsg = dialog.querySelector("h2");
 
+        playerSetUpMsg.textContent = "Player 1 Set Up";
 
-        for (let i = 0; i < MAX_PLAYERS; i++) {
+        dialog.showModal();
 
-            const name = enterName();
-
-            const marker = chooseMarker(name);
-
-            const player = createPlayer(name, marker, i+1);
-
-            players.push(player);
-
-        }
     }
 
     function chooseBlock() {
@@ -288,7 +386,6 @@ const gameController = (() => {
 
         } while(play);
 
-        console.log("Thanks for playing!");
     }
 
     function checkWin(marker) {
@@ -334,9 +431,9 @@ const gameController = (() => {
 })()
 
 
-function createPlayer(name, marker, number) {
+function createPlayer(name, marker) {
 
-    const playerName = `Player ${number}: ` + name;
+    const playerName = name;
     const chosenMarker = marker;
 
     function getName() {
@@ -359,7 +456,3 @@ const restartBtn = document.querySelector("#restartBtn");
 startBtn.addEventListener("click", gameController.startGame);
 
 restartBtn.addEventListener("click", gameController.restartGame);
-
-const playerDialog = document.querySelector("#playerDialog");
-
-playerDialog.showModal();

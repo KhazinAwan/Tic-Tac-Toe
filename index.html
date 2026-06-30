@@ -17,24 +17,32 @@
 
     <dialog id="playerDialog">
 
-        <h2>Player Setup</h2>
+        <form id="playerForm">
 
-        <label for="playerNameInput">Name</label>
-        <input id="playerNameInput" type="text" maxlength="15">
+            <h2>Player Setup</h2>
 
-        <p>Choose your marker</p>
+            <label for="playerNameInput">Name</label>
+            <input id="playerNameInput" type="text" maxlength="15" required>
 
-        <div id="markerContainer">
+            <p id="nameError">Name cannot contain only spaces</p>
 
-            <button class="markerBtn" data-marker="X">X</button>
+            <p>Choose your marker</p>
 
-            <button class="markerBtn" data-marker="O">O</button>
+            <div id="markerContainer">
 
-            <button class="markerBtn" data-marker="V">V</button>
+                <button type="button" class="markerBtn" data-marker="X">X</button>
 
-        </div>
+                <button type="button" class="markerBtn" data-marker="O">O</button>
 
-        <button id="continueBtn">Continue</button>
+                <button type="button" class="markerBtn" data-marker="V">V</button>
+
+            </div>
+
+            <p id="markerError">A marker should be chosen.</p>
+
+            <button id="continueBtn" type="submit">Continue</button>
+
+        </form>
 
     </dialog>
 
