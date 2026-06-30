@@ -124,7 +124,7 @@ dialog h2 {
 
     visibility: hidden;
 
-    font-size: 2rem;
+    font-size: 1.5rem;
 
 }
 
@@ -207,8 +207,6 @@ dialog h2 {
 #restartBtn:hover,
 #startBtn:focus,
 #restartBtn:focus {
-
-    /* background-color: #9b0d18; */
 
     outline: none;
 
@@ -309,10 +307,21 @@ dialog label {
 }
 
 .markerBtn:hover,
-#continueBtn:hover,
-.markerBtnSelected {
+.markerBtnSelected,
+#continueBtn:hover
+
+ {
 
     background-color: var(--primary-color);
+    border: 2px solid var(--text-color);
+}
+
+.markerBtn:focus,
+#playerNameInput:focus {
+
+    outline: none;
+    border: 2px double var(--primary-color);
+
 }
 
 

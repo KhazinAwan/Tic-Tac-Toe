@@ -148,7 +148,7 @@ const gameController = (() => {
 
     })();
 
-    function updateDialog() {
+    function clearDialog() {
 
         const nameInput = document.getElementById("playerNameInput");
         const errorOnInput = document.getElementById("nameError");
@@ -195,7 +195,7 @@ const gameController = (() => {
 
             if (players.length < MAX_PLAYERS) {
 
-                updateDialog();
+                clearDialog();
 
                 playerSetUpMsg.textContent = `Player ${players.length + 1} Set Up`;
 
@@ -204,12 +204,29 @@ const gameController = (() => {
             else {
 
                 updatePlayerCards();
+                
+                const startBtn = document.querySelector("#startBtn");
+                const restartBtn = document.querySelector("#restartBtn");
+
+                startBtn.style.display = "none";
+                restartBtn.style.display = "block"
 
                 dialog.close();
 
             }
 
         })
+
+    })();
+
+    (function addingGameBtnsEventListeners() {
+
+        const startBtn = document.querySelector("#startBtn");
+        const restartBtn = document.querySelector("#restartBtn");
+
+        startBtn.addEventListener("click", startGame);
+
+        restartBtn.addEventListener("click", restartGame);
 
     })();
 
@@ -238,6 +255,7 @@ const gameController = (() => {
 
         playerOneCard.classList.add("redBorder");
     }
+
 
     function createPlayers() {
 
@@ -333,7 +351,7 @@ const gameController = (() => {
 
                 highlightCells([0, col], [1, col], [2, col]);
 
-                won =  true;
+                won = true;
             }
         }
 
@@ -351,7 +369,7 @@ const gameController = (() => {
             won = true;
         }
 
-        if(won) {
+        if (won) {
 
             status.textContent = `Player: ${players[currPlayerIndex].getName()} wins!`
             status.style.visibility = "visible";
@@ -386,18 +404,48 @@ const gameController = (() => {
 
     }
 
+    function clearMarkersFromBoard(){
+
+        const grid = document.getElementById("board");
+        const btns = document.querySelectorAll(".cell");
+
+        btns.forEach(btn => {
+
+            btn.textContent = "";
+            btn.classList.remove("redBg");
+
+        })
+
+    }
+
     function restartGame() {
 
         markers.length = 0;
-
         markers.push("X", "O", "V");
+
+        clearDialog();
 
         players.length = 0;
 
         board.resetBoard();
+        clearMarkersFromBoard();
 
-        startBtn.hidden = false;
-        restartBtn.hidden = true;
+        const startBtn = document.querySelector("#startBtn");
+        const restartBtn = document.querySelector("#restartBtn");
+
+        startBtn.style.display = "block";
+        restartBtn.style.display = "none"
+
+        const btns = document.querySelectorAll(".markerBtn");
+
+        btns.forEach(btn => {
+
+            btn.classList.remove("markerBtnSelected");
+
+        })
+
+        const status = document.getElementById("gameStatus");
+        status.textContent = "";
 
         ticTacToe();
 
@@ -431,10 +479,3 @@ function createPlayer(name, marker) {
     return { getName, getMarker };
 }
 
-
-const startBtn = document.querySelector("#startBtn");
-const restartBtn = document.querySelector("#restartBtn");
-
-startBtn.addEventListener("click", gameController.startGame);
-
-restartBtn.addEventListener("click", gameController.restartGame);
