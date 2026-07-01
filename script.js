@@ -33,14 +33,10 @@ const gameBoard = (() => {
 
             board[rowIndex][colIndex] = marker;
 
-            console.log(`Marker ${marker} placed at row: ${rowIndex} and col: ${colIndex}`);
-
             return true;
         }
 
         else {
-
-            console.log(`Invalid Entry at row: ${rowIndex} and col: ${colIndex}, try again`);
 
             return false;
         }
@@ -68,13 +64,38 @@ const gameController = (() => {
     const markers = ['X', 'O', 'V'];
     const MAX_PLAYERS = 2;
     const players = [];
-    const board = gameBoard;
-
     let currPlayerIndex = 0;
+    let gameEnd = false;
+
+    const markerBtns = document.querySelectorAll(".markerBtn");
+    const markerError = document.getElementById("markerError");
+
+    const nameInput = document.getElementById("playerNameInput");
+    const errorOnInput = document.getElementById("nameError");
+
+    const playerForm = document.getElementById("playerForm");
+
+    const dialog = document.getElementById("playerDialog");
+
+    const playerSetUpMsg = dialog.querySelector("h2");
+
+    const startBtn = document.querySelector("#startBtn");
+    const restartBtn = document.querySelector("#restartBtn");
+
+    const playerOneName = document.getElementById("playerOneName");
+    const playerOneMarker = document.getElementById("playerOneMarker");
+    const playerTwoName = document.getElementById("playerTwoName");
+    const playerTwoMarker = document.getElementById("playerTwoMarker");
+    const playerOneCard = document.getElementById("playerOne");
+    const playerTwoCard = document.getElementById("playerTwo");
+    const playerCards = document.querySelectorAll(".playerCard");
+
+    const status = document.getElementById("gameStatus");
+
+    const grid = document.getElementById("board");
+    const cells = document.querySelectorAll("#board .cell");
 
     function updateMarkers() {
-
-        const markerBtns = document.querySelectorAll(".markerBtn");
 
         markerBtns.forEach(btn => {
 
@@ -96,9 +117,6 @@ const gameController = (() => {
 
     function NameValidator() {
 
-        const nameInput = document.getElementById("playerNameInput");
-        const errorOnInput = document.getElementById("nameError");
-
         const name = nameInput.value.trim();
 
         if (name === "") {
@@ -118,15 +136,13 @@ const gameController = (() => {
 
     const markerBtn = (() => {
 
-        const btns = document.querySelectorAll(".markerBtn");
-
         let chosenMarker;
 
-        btns.forEach(btn => {
+        markerBtns.forEach(btn => {
 
             btn.addEventListener("click", (event) => {
 
-                btns.forEach(btn => {
+                markerBtns.forEach(btn => {
 
                     btn.classList.remove("markerBtnSelected");
 
@@ -141,30 +157,29 @@ const gameController = (() => {
         function getChosenMarker() {
 
             return chosenMarker;
-
         }
 
-        return { getChosenMarker };
+        function clearChosenMarker() {
+
+            chosenMarker = undefined;
+        }
+
+        return { getChosenMarker, clearChosenMarker };
 
     })();
 
     function clearDialog() {
-
-        const nameInput = document.getElementById("playerNameInput");
-        const errorOnInput = document.getElementById("nameError");
-        const markerError = document.getElementById("markerError");
 
         nameInput.value = "";
         errorOnInput.style.display = "none";
         markerError.style.display = "none";
 
         updateMarkers();
+        markerBtn.clearChosenMarker();
 
     }
 
     (function addingPlayerFormEventListener() {
-
-        const playerForm = document.getElementById("playerForm");
 
         playerForm.addEventListener("submit", (event) => {
 
@@ -175,8 +190,6 @@ const gameController = (() => {
 
             if (!chosenMarker) {
 
-                const markerError = document.getElementById("markerError");
-
                 markerError.style.display = "block";
 
             }
@@ -185,9 +198,6 @@ const gameController = (() => {
 
                 return;
             }
-
-            const dialog = document.getElementById("playerDialog");
-            const playerSetUpMsg = dialog.querySelector("h2");
 
             markers.splice(markers.indexOf(chosenMarker), 1);
 
@@ -204,9 +214,6 @@ const gameController = (() => {
             else {
 
                 updatePlayerCards();
-                
-                const startBtn = document.querySelector("#startBtn");
-                const restartBtn = document.querySelector("#restartBtn");
 
                 startBtn.style.display = "none";
                 restartBtn.style.display = "block"
@@ -221,31 +228,18 @@ const gameController = (() => {
 
     (function addingGameBtnsEventListeners() {
 
-        const startBtn = document.querySelector("#startBtn");
-        const restartBtn = document.querySelector("#restartBtn");
-
         startBtn.addEventListener("click", startGame);
 
         restartBtn.addEventListener("click", restartGame);
 
     })();
 
-
     function Player(name, chosenMarker) {
 
         players.push(createPlayer(name, chosenMarker));
-
     }
 
     function updatePlayerCards() {
-
-        const playerOneName = document.getElementById("playerOneName");
-        const playerOneMarker = document.getElementById("playerOneMarker");
-
-        const playerTwoName = document.getElementById("playerTwoName");
-        const playerTwoMarker = document.getElementById("playerTwoMarker");
-
-        const playerOneCard = document.getElementById("playerOne");
 
         playerOneName.textContent = players[0].getName();
         playerOneMarker.textContent = players[0].getMarker();
@@ -256,11 +250,7 @@ const gameController = (() => {
         playerOneCard.classList.add("redBorder");
     }
 
-
     function createPlayers() {
-
-        const dialog = document.getElementById("playerDialog");
-        const playerSetUpMsg = dialog.querySelector("h2");
 
         playerSetUpMsg.textContent = "Player 1 Set Up";
 
@@ -269,8 +259,6 @@ const gameController = (() => {
     }
 
     (function addingGridCellsEventListeners() {
-
-        const cells = document.querySelectorAll("#board .cell");
 
         cells.forEach(cell => {
 
@@ -284,37 +272,41 @@ const gameController = (() => {
 
     function placeMarker(btn) {
 
+        if (gameEnd) {
+            return;
+        }
+
         let currPlayer = players[currPlayerIndex];
 
         const marker = currPlayer.getMarker();
 
-        const playerOneCard = document.getElementById("playerOne");
-        const playerTwoCard = document.getElementById("playerTwo");
-
         if (btn.textContent === "") {
 
             btn.textContent = marker;
-            board.putMarker(btn.dataset.row, btn.dataset.col, marker);
+            gameBoard.putMarker(btn.dataset.row, btn.dataset.col, marker);
 
             let won = checkWin(marker);
 
-            if(!won) {
+            if (!won) {
 
-            checkTie();
-            currPlayerIndex = (currPlayerIndex + 1) % 2;
-
+                checkTie();
             }
 
-            if (currPlayerIndex === 0) {
+            if (!gameEnd) {
 
-                playerOneCard.classList.add("redBorder");
-                playerTwoCard.classList.remove("redBorder");
-            }
+                currPlayerIndex = (currPlayerIndex + 1) % 2;
 
-            else {
+                if (currPlayerIndex === 0) {
 
-                playerTwoCard.classList.add("redBorder");
-                playerOneCard.classList.remove("redBorder");
+                    playerOneCard.classList.add("redBorder");
+                    playerTwoCard.classList.remove("redBorder");
+                }
+
+                else {
+
+                    playerTwoCard.classList.add("redBorder");
+                    playerOneCard.classList.remove("redBorder");
+                }
             }
         }
 
@@ -328,14 +320,11 @@ const gameController = (() => {
     function ticTacToe() {
 
         createPlayers();
-
     }
 
     function checkWin(marker) {
 
-        const grid = board.getBoard();
-
-        const status = document.getElementById("gameStatus");
+        const grid = gameBoard.getBoard();
 
         let won;
 
@@ -346,34 +335,52 @@ const gameController = (() => {
                 highlightCells([row, 0], [row, 1], [row, 2]);
 
                 won = true;
+
+                break;
             }
         }
 
-        for (let col = 0; col < 3; col++) {
+        if (!won) {
 
-            if (grid[0][col] === marker && grid[1][col] === marker && grid[2][col] === marker) {
+            for (let col = 0; col < 3; col++) {
 
-                highlightCells([0, col], [1, col], [2, col]);
+                if (grid[0][col] === marker && grid[1][col] === marker && grid[2][col] === marker) {
+
+                    highlightCells([0, col], [1, col], [2, col]);
+
+                    won = true;
+
+                    break;
+                }
+            }
+
+        }
+
+        if (!won) {
+
+            if (grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) {
+
+                highlightCells([0, 0], [1, 1], [2, 2]);
 
                 won = true;
             }
+
         }
 
-        if (grid[0][0] === marker && grid[1][1] === marker && grid[2][2] === marker) {
+        if (!won) {
 
-            highlightCells([0, 0], [1, 1], [2, 2]);
+            if (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker) {
 
-            won = true;
-        }
+                highlightCells([0, 2], [1, 1], [2, 0]);
 
-        if (grid[0][2] === marker && grid[1][1] === marker && grid[2][0] === marker) {
+                won = true;
+            }
 
-            highlightCells([0, 2], [1, 1], [2, 0]);
-
-            won = true;
         }
 
         if (won) {
+
+            gameEnd = true;
 
             status.textContent = `Player: ${players[currPlayerIndex].getName()} wins!`
             status.style.visibility = "visible";
@@ -398,9 +405,9 @@ const gameController = (() => {
 
     function checkTie() {
 
-        if (board.getBlocksFilled() === 9) {
+        if (gameBoard.getBlocksFilled() === 9) {
 
-            const status = document.getElementById("gameStatus");
+            gameEnd = true;
 
             status.textContent = "It's a tie!";
 
@@ -410,21 +417,20 @@ const gameController = (() => {
 
     }
 
-    function clearMarkersFromBoard(){
+    function clearMarkersFromBoard() {
 
-        const grid = document.getElementById("board");
-        const btns = document.querySelectorAll(".cell");
+        cells.forEach(cell => {
 
-        btns.forEach(btn => {
-
-            btn.textContent = "";
-            btn.classList.remove("redBg");
+            cell.textContent = "";
+            cell.classList.remove("redBg");
 
         })
 
     }
 
     function restartGame() {
+
+        gameEnd = false;
 
         markers.length = 0;
         markers.push("X", "O", "V");
@@ -434,24 +440,17 @@ const gameController = (() => {
         players.length = 0;
         currPlayerIndex = 0;
 
-        board.resetBoard();
+        gameBoard.resetBoard();
         clearMarkersFromBoard();
-
-        const startBtn = document.querySelector("#startBtn");
-        const restartBtn = document.querySelector("#restartBtn");
 
         startBtn.style.display = "block";
         restartBtn.style.display = "none"
 
-        const btns = document.querySelectorAll(".markerBtn");
-
-        btns.forEach(btn => {
+        markerBtns.forEach(btn => {
 
             btn.classList.remove("markerBtnSelected");
 
         })
-
-        const playerCards = document.querySelectorAll(".playerCard");
 
         playerCards.forEach(card => {
 
@@ -459,7 +458,6 @@ const gameController = (() => {
 
         })
 
-        const status = document.getElementById("gameStatus");
         status.textContent = "";
 
         ticTacToe();
@@ -471,7 +469,7 @@ const gameController = (() => {
         ticTacToe();
     }
 
-    return { startGame, restartGame, players };
+    // return { startGame, restartGame, players };
 
 })()
 
